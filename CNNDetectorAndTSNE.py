@@ -8,8 +8,8 @@ from tqdm import tqdm
 import tensorflow as tf
 import matplotlib.pyplot as plt
 from matplotlib import cm
-from keras.utils import plot_model
-from tensorflow import set_random_seed
+from tensorflow.keras.utils import plot_model
+from tensorflow.keras.utils import set_random_seed
 set_random_seed(1)
 from sklearn.decomposition import PCA
 from sklearn.manifold import TSNE
@@ -20,12 +20,12 @@ false_pos_data = 'False Positive Folder'
 
 class Label(object):
 	"""Create the labels for image data
-	
+
 	Parameters
 	------------
 	image_file : str
 		Name of the image file
-	
+
 	Methods:
 	------------
 	gen_label
@@ -135,15 +135,15 @@ for activation_fx in activation_fxs:
 				model = Sequential()
 
 				model.add(InputLayer(input_shape = [64,64,1]))
-				model.add(Conv2D(filters = 32, kernel_size = filter_size, strides = 1, 
+				model.add(Conv2D(filters = 32, kernel_size = filter_size, strides = 1,
 					padding = 'same', activation = activation_fx))
 				model.add(MaxPool2D(pool_size = 5, padding = 'same'))
 
-				model.add(Conv2D(filters = 50, kernel_size = filter_size, strides = 1, 
+				model.add(Conv2D(filters = 50, kernel_size = filter_size, strides = 1,
 					padding = 'same', activation = activation_fx))
 				model.add(MaxPool2D(pool_size = 5, padding = 'same'))
 
-				model.add(Conv2D(filters = 80, kernel_size = filter_size, strides = 1, 
+				model.add(Conv2D(filters = 80, kernel_size = filter_size, strides = 1,
 					padding = 'same', activation = activation_fx))
 				model.add(MaxPool2D(pool_size = 5, padding = 'same'))
 
@@ -154,9 +154,9 @@ for activation_fx in activation_fxs:
 				model.add(Dense(2, activation = 'softmax'))
 				optimizer = Adam(lr = learning_rate)
 
-				model.compile(optimizer = optimizer, 
+				model.compile(optimizer = optimizer,
 					loss = 'categorical_crossentropy', metrics = ['accuracy'])
-				model_fitting = model.fit(x = train_image_data, y = train_label_data, 
+				model_fitting = model.fit(x = train_image_data, y = train_label_data,
 					epochs = 50, batch_size = batch_size_n, shuffle = False)
 				model.summary()
 				metrics = model.evaluate(x = train_image_data, y = train_label_data)
@@ -166,13 +166,13 @@ for activation_fx in activation_fxs:
 				accuracy_vec.append(accuracy)
 
 				if len(accuracy_vec) == 1:
-					hyperparameter_dict = {'Learning Rate' : learning_rate, 
+					hyperparameter_dict = {'Learning Rate' : learning_rate,
 						'Batch Size' : batch_size_n, 'Filter Size' : filter_size}
 					optimal_accuracy = accuracy
 				else:
 					if accuracy_vec[-1] > accuracy_vec[-2]:
-						hyperparameter_dict = {'Learning Rate' : learning_rate, 
-							'Batch Size' : batch_size_n, 'Filter Size' : filter_size, 
+						hyperparameter_dict = {'Learning Rate' : learning_rate,
+							'Batch Size' : batch_size_n, 'Filter Size' : filter_size,
 							'Activation Function' : activation_fx}
 						optimal_accuracy = accuracy_vec[-1]
 #print('Optimal choice of hyperparameters: ', hyperparameter_dict)
@@ -208,15 +208,15 @@ trained_model = model
 trunc_model = Sequential()
 
 trunc_model.add(InputLayer(input_shape = [64,64,1]))
-trunc_model.add(Conv2D(filters = 32, kernel_size = filter_size, strides = 1, 
+trunc_model.add(Conv2D(filters = 32, kernel_size = filter_size, strides = 1,
 	padding = 'same', activation = activation_fx))
 trunc_model.add(MaxPool2D(pool_size = 5, padding = 'same'))
 
-trunc_model.add(Conv2D(filters = 50, kernel_size = filter_size, strides = 1, 
+trunc_model.add(Conv2D(filters = 50, kernel_size = filter_size, strides = 1,
 	padding = 'same', activation = activation_fx))
 trunc_model.add(MaxPool2D(pool_size = 5, padding = 'same'))
 
-trunc_model.add(Conv2D(filters = 80, kernel_size = filter_size, strides = 1, 
+trunc_model.add(Conv2D(filters = 80, kernel_size = filter_size, strides = 1,
 	padding = 'same', activation = activation_fx))
 trunc_model.add(MaxPool2D(pool_size = 5, padding = 'same'))
 trunc_model.add(Dropout(0.25))
@@ -228,10 +228,10 @@ for i, layer in enumerate(trunc_model.layers):
 
 optimizer = Adam(lr = learning_rate)
 
-trunc_model.compile(optimizer = optimizer, 
+trunc_model.compile(optimizer = optimizer,
 	loss = 'categorical_crossentropy', metrics = ['accuracy'])
 
-extracted_features = trunc_model.predict(train_image_data)	
+extracted_features = trunc_model.predict(train_image_data)
 print(extracted_features)
 
 for component in [1, 2, 3, 4, 5, 10, 20, 50]:
@@ -258,7 +258,7 @@ for cl in range(2):
 	indices = np.where(color_map==cl)
 	indices = indices[0]
 	c = colors[cl]
-	plt.scatter(tsne_results[indices,0], tsne_results[indices, 1], 
+	plt.scatter(tsne_results[indices,0], tsne_results[indices, 1],
 		label=cl, color=c)
 
 plt.legend(('Click','No Click'))
@@ -287,7 +287,7 @@ for cnt, data in enumerate(testing_images[10:40]):
 	plt.title(str_label)
 	y.axes.get_xaxis().set_visible(False)
 	y.axes.get_yaxis().set_visible(False)
-plt.show()	
+plt.show()
 
 figFP = plt.figure(figsize = (14,14))
 for cnt, data in enumerate(false_pos_images[10:40]):
@@ -305,5 +305,5 @@ for cnt, data in enumerate(false_pos_images[10:40]):
 	plt.title(str_label)
 	y.axes.get_xaxis().set_visible(False)
 	y.axes.get_yaxis().set_visible(False)
-plt.show(figFP)	
+plt.show(figFP)
 
